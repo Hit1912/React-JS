@@ -1,108 +1,114 @@
-import React, { useState } from "react";
-import { NotebookPen, LayoutList } from "lucide-react";
+import { LayoutList, NotebookPen } from "lucide-react";
+import { useState } from "react";
 
-const App = () => {
-  const [Title, setTitle] = useState("");
-  const [Notes, setNotes] = useState("");
-  const [Tasks, setTasks] = useState([]);
+const Note = () => {
+    const [Heading, setHeading] = useState("");
+    const [Notes, setNots] = useState("");
+    const [Tasks, setTasks] = useState([]);
 
-  function SubmitForm(e) {
-    e.preventDefault();
+    const SubmitForm = () => {
+        console.log("New Task Create :", {
+            "Task Heading": Heading,
+            Notes: Notes,
+        });
 
-    if (!Title || !Notes) return;
+        let Add = [...Tasks];
+        Add.push({ Title: Heading, Task: Notes, date: new Date().toLocaleDateString() });
+        setTasks(Add);
 
-    setTasks([...Tasks, { Heading: Title, List: Notes }]);
-    setTitle("");
-    setNotes("");
-  }
+        console.log("Tasks : ", Tasks);
 
-  return (
-    <section className="lg:flex min-h-screen">
+        setHeading("");
+        setNots("");
+    };
+    return (
+        <>
+            <section className="flex item-center Justify-center w-full h-screen">
+                <div className="w-1/2 h-screen flex items-center justify-center">
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            SubmitForm();
+                        }}
+                    >
+                        <div className="flex gap-4 items-center my-4">
+                            <NotebookPen
+                                strokeWidth={3}
+                                className="w-32 h-32 text-green-700"
+                            />
+                            <h1 className="text-5xl font-bold text-green-950 text-shadow-lg">
+                                Add Your Task
+                            </h1>
+                        </div>
 
-      {/* LEFT SIDE */}
-      <div className="lg:w-1/2 w-full flex items-center justify-center bg-[#f5f7f6] p-6">
-        <form onSubmit={SubmitForm} className="w-full max-w-md">
+                        <input
+                            type="text"
+                            className="w-full bg-green-200 rounded-md px-4 py-2 my-2"
+                            placeholder="Enter your task"
+                            value={Heading}
+                            onChange={(e) => {
 
-          {/* 🔥 SUPER BIG PREMIUM HEADING */}
-          <div className="flex items-center gap-5 mb-10">
-            <NotebookPen size={70} className="text-green-700" />
+                                if (e.target.value.length >= 10) {
+                                    alert("Task Heading is too long");
+                                    return;
+                                }
+                                setHeading(e.target.value);
+                            }}
+                        />
+                        <div className="relative w-full my-2">
+                            <textarea
+                                rows={8}
+                                className="w-full bg-green-200 rounded-md px-4 py-2 pr-12"
+                                placeholder="Enter your description"
+                                value={Notes}
+                                onChange={(e) => {
+                                    if (e.target.value.length >= 100) {
+                                        return;
+                                    }
+                                    setNots(e.target.value);
+                                }}
+                            />
+                            <span className="absolute bottom-2 right-3 text-sm text-red-500">
+                                {Notes.length}/100
+                            </span>
+                        </div>
 
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-extrabold bg-linear-to-r from-green-600 to-green-900 bg-clip-text text-transparent tracking-wide leading-tight">
-              Add Your Task
-            </h1>
-          </div>
+                        <input
+                            type="submit"
+                            value="New Task"
+                            className="w-full text-center px-4 py-2 rounded-md bg-green-900 text-green-100 active:scale-95 active:bg-green-100 active:text-green-900 transition-all font-semibold"
+                        />
+                    </form>
+                </div>
+                <div className="w-1/2 h-screen border-l-2 border-black border-dashed p-4 bg-[#faf3ee] overflow-auto">
+                    <div className="flex justify-center items-center gap-4 my-4">
+                        <LayoutList
+                            strokeWidth={3}
+                            className="w-10 h-10 text-[#582f0e] font-bold"
+                        />
+                        <h1 className="text-4xl text-[#582f0e]">Your Task</h1>
+                    </div>
+                    <div className="flex flex-wrap item-center justify-center gap-6 w-full h-screen ">
+                        {Tasks.map((data, idx) => {
+                            return (
+                                <div className="border-2 border-[#582f0e] flex items-center justify-center p-2 rounded-4xl w-full h-72 max-w-72">
 
-          {/* INPUT */}
-          <input
-            type="text"
-            placeholder="Enter your task"
-            value={Title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-green-200 outline-none mb-4 text-lg"
-          />
+                                    <div className="w-full  max-w-68 h-68 bg-[#582f0e] rounded-3xl text-white p-4">
 
-          {/* TEXTAREA */}
-          <textarea
-            rows={6}
-            placeholder="Enter your description"
-            value={Notes}
-            onChange={(e) => setNotes(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-green-200 outline-none mb-4 text-lg"
-          ></textarea>
+                                        <h1 className='text-4xl font-bold bg-white text-[#582f0e]/90 rounded-full h-12 w-12 flex items-center justify-center'>{idx + 1}</h1>
+                                        <h2 className='text-3xl text-center my-1 font-h2'>{data.Title}</h2>
+                                        <p className='text-xl my-1 text-wrap hyphens-auto'>{data.Task}</p>
+                                        <p className='text-md text-[#faf3ee]/50 text-right'>{data.date}</p>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
 
-          {/* BUTTON */}
-          <button className="w-full bg-green-800 text-white py-3 rounded-lg font-semibold text-lg hover:bg-green-900 transition active:scale-95">
-            New Task
-          </button>
-        </form>
-      </div>
+                </div>
+            </section>
+        </>
+    )
+}
 
-      {/* RIGHT SIDE */}
-      <div className="lg:w-1/2 w-full border-l-2 border-dashed border-gray-400 bg-[#f1ede7] p-6 overflow-auto">
-
-        {/* HEADER */}
-        <div className="flex items-center gap-3 mb-6">
-          <LayoutList size={30} />
-          <h2 className="text-3xl font-semibold">
-            Your Task
-          </h2>
-        </div>
-
-        {/* TASK CARDS */}
-        <div className="flex flex-wrap gap-6">
-          {Tasks.map((task, id) => (
-            <div
-              key={id}
-              className="w-72 bg-[#6b3f1d] text-white rounded-3xl p-4 shadow-xl relative hover:scale-105 transition"
-            >
-              {/* PIN */}
-              <img
-                src="https://pngimg.com/uploads/pushpin/pushpin_PNG76.png"
-                alt=""
-                className="w-10 absolute -top-3 left-1/2 -translate-x-1/2"
-              />
-
-              {/* NUMBER */}
-              <h1 className="text-xl font-bold">{id + 1}</h1>
-
-              {/* TITLE */}
-              <h2 className="text-2xl font-semibold text-center my-2 italic">
-                {task.Heading}
-              </h2>
-
-              {/* DESCRIPTION */}
-              <p className="text-sm opacity-90">{task.List}</p>
-
-              {/* DATE */}
-              <p className="text-xs text-right mt-4 opacity-70">
-                {new Date().toLocaleDateString()}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-export default App;
+export default Note;
