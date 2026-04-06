@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const ApiFetch = () => {
   const [Data1, setData1] = useState([]);
@@ -34,6 +35,17 @@ const ApiFetch = () => {
   };
 
   // method 3
+  const method3 = async () => {
+    // get ==> recieve data only
+    // post ==> send data only
+    // patch ==> update data
+    // delete ==> delete data
+
+    let response =await axios.get("https://dummyjson.com/recipes?limit=10",);
+    console.log(response.data.recipes);
+    return setData3(response.data.recipes);
+  };
+
 
   return (
     <>
@@ -93,12 +105,25 @@ const ApiFetch = () => {
         </button>
       </section>
 
+{/* method 3 */}
       <section className="bg-red-100 w-full h-screen p-6 flex flex-col justify-center items-center gap-y-4">
         <h1 className="text-3xl">method 3: Axios(Async Await)</h1>
-        <div className="bg-black h-144 w-full rounded-md "></div>
+        <div className="bg-black h-144 w-full rounded-md flex flex-wrap items-center justify-center gap-4 overflow-auto p-4">
+          {Data3.map((rec, idx)=>{
+            return(
+                <div key={idx} className="text-white rounded-2xl bg-[#222] p-4 w-72">
+                    <img src={rec.image} alt="images" className="w-full rounded-md hover:rounded-full transition-all hover:rotate-360 hover:scale-110 duration-1000"/>
+                    <div>
+                        <h1>{rec.name}</h1>
+                        <h1>{rec.rating}</h1>
+                    </div>
+                </div>
+            )
+          })}
+        </div>
         <button
           className="px-4 py-2 text-center rounded-md bg-red-950 w-36 active:bg-red-100 active:border-red-950  active:text-red-950 active:scale-90 text-white focus:scale-95 font-bold"
-          onClick={method1}
+          onClick={method3}
         >
           Get data
         </button>
